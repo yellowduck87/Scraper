@@ -1,14 +1,8 @@
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
-// // mongoose.Promise = Promise;
-// mongoose.connect(MONGODB_URI);
-
 
 var express = require("express");
 var bodyParser = require("body-parser");
-// var logger = require("morgan");
+var logger = require("morgan");
 var mongoose = require("mongoose");
-var request = require("request");
 var cheerio = require("cheerio");
 var axios = require("axios")
 
@@ -18,17 +12,22 @@ var PORT = 3000;
 
 var app = express();
 
-// app.use(logger("dev"));
-// Use body-parser for handling form submissions
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/scraper" ;
+
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
+
+app.use(logger("dev"));
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-// Use express.static to serve the public folder as a static directory
+
 app.use(express.static("public"));
 
-mongoose.connect("mongodb://localhost/scraper", {
-    useNewUrlParser: true
-});
+// mongoose.connect("mongodb://localhost/scraper", {
+//     useNewUrlParser: true
+// });
 
 app.get("/scrape", function (req, res) {
     axios.get("http://www.developerdrive.com/").then(function (response) {
@@ -111,9 +110,6 @@ app.post("/articles/:id", function (req, res) {
                 })
         })
 
-    // save the new note that gets posted to the Notes collection
-    // then find an article from the req.params.id
-    // and update it's "note" property with the _id of the new note
 });
 
 
